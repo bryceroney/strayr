@@ -94,6 +94,18 @@
      
   </a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/clean_state.html">Converting state names and abbreviations</a>
+    </li>
+  </ul>
+</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -181,12 +193,14 @@ Only relevant when fuzzy_match is TRUE.</p></td>
 <code><a href='clean_asced_qual.html'>clean_asced_qual</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='fu'>clean_anzsic</span><span class='op'>(</span><span class='st'>"Agriculture forestry &amp; Fishing"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "Agriculture, Forestry and Fishing"</div><div class='input'>
-<span class='fu'>clean_anzsic</span><span class='op'>(</span><span class='st'>"Agriculture, Forestry"</span>, fuzzy_match <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "Agriculture, Forestry and Fishing"</div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='fu'>clean_anzsic</span><span class='op'>(</span><span class='st'>"Agriculture forestry &amp; Fishing"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "Agriculture, Forestry and Fishing"</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>clean_anzsic</span><span class='op'>(</span><span class='st'>"Agriculture, Forestry"</span>, fuzzy_match <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "Agriculture, Forestry and Fishing"</span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
