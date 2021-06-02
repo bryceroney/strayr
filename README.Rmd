@@ -27,22 +27,18 @@ status](https://github.com/runapp-aus/strayr/workflows/R-CMD-check/badge.svg)](h
 
 <!-- badges: end -->
 
-The `strayr` package provides tools to make working with Australian
-data easier. This includes:
-
--   tidy versions of common structures used by the Australian Bureau of
-    Statistics (ABS), like ANZSIC and ANZSCO:
-
--   a function to tidy up state names (`clean_states()`); and
-
--   a function that knows whether particular dates are public holidays
-    (`is_holiday()`).
+There are many great sources of Australian data for use by analysts.
+This package aims to simplify access to those datasets by providing them
+in a consistent and easy to use format. It also contains a number of
+helper functions to assist with analysis work.
 
 This package is currently **in development** and subject to change. The
 lifecycle badge will be changed to `stable` when it is stable (should be
 relatively soon).
 
-**Contribute to this package**: people are actively encouraged to
+**Contribute to this package**: This package is part of
+[runapp](https://github.com/runapp-aus): the Australian R Users Network
+of Australian Public Policy, people are actively encouraged to
 contribute to this package.
 
 ## Installation
@@ -50,154 +46,37 @@ contribute to this package.
 You can install the current version of `strayr` with:
 
 ``` r
+if (!require("remotes")) install.packages("remotes")
 remotes::install_github("runapp-aus/strayr")
 ```
 
-## Structures
+## What's in the box?
+
+The `strayr` package provides tools to make working with Australian data
+easier. This includes:
+
+-   tidy versions of common structures used by the Australian Bureau of
+    Statistics (ABS);
+-   tidy versions of other helpful datasets like Australian public
+    holidays; and
+-   helper functions to help you work with your data.
+
+### Structures
 
 Current structures stored in `strayr` are:
 
--   `anzsco`: occupation levels of the [Australian and New Zealand
-    Standard Classification of Occupations (ANZSCO), First Edition,
-    Revision 1, 2009. Cat.
-    1220.0](https://www.abs.gov.au/AUSSTATS/abs@.nsf/DetailsPage/1220.0First%20Edition,%20Revision%201?OpenDocument).
--   `anzsic`: industry levels of the [Australian and New Zealand
-    Standard Industrial Classification (ANZSIC), 2006 (Revision 1.0).
-    Cat.
-    1292.0](https://www.abs.gov.au/ausstats/abs@.nsf/0/20C5B5A4F46DF95BCA25711F00146D75?opendocument).
--   `asced_foe`: field of education levels of the [Australian Standard
-    Classification of Education (ASCED), 2001. Cat.
-    1272.0](https://www.abs.gov.au/ausstats/abs@.nsf/mf/1272.0).
--   `asced_qual`: qualification levels of the [Australian Standard
-    Classification of Education (ASCED), 2001. Cat.
-    1272.0](https://www.abs.gov.au/ausstats/abs@.nsf/mf/1272.0).
-
-The `strayr` package also loads
-[`absmapsdata`](https://github.com/wfmackey/absmapsdata), which contains
-the following structures *and their geometry* as `sf` objects:
-
-**ASGS Main Structures**
-
--   `sa12011`: Statistical Area 1 2011
--   `sa12016`: Statistical Area 1 2016
--   `sa22011`: Statistical Area 2 2011
--   `sa22016`: Statistical Area 2 2016
--   `sa32011`: Statistical Area 3 2011
--   `sa32016`: Statistical Area 3 2016
--   `sa42011`: Statistical Area 4 2011
--   `sa42016`: Statistical Area 4 2016
--   `gcc2011`: Greater Capital Cities 2011
--   `gcc2016`: Greater Capital Cities 2016
--   `ra2011`: Remoteness Areas 2011
--   `ra2016`: Remoteness Areas 2016
--   `state2011`: State 2011
--   `state2016`: State 2016
-
-**ASGS Non-ABS Structures**
-
--   `ced2018`: Commonwealth Electoral Divisions 2018
--   `sed2018`: State Electoral Divisions 2018
--   `lga2016`: Local Government Areas 2016
--   `lga2018`: Local Government Areas 2018
--   `regional_ivi2008`: Regions for the Internet Vacancy Index 2008
--   `postcodes2016`: Postcodes 2016
--   `dz2011`: Census of Population and Housing Destination Zones 2011
--   `dz2016`: Census of Population and Housing Destination Zones 2016
-
-## Using ABS structures
-
-Loading the package will lazily load the structures listed above. Call
-them with their name:
-
-```{r actual-load, include=FALSE}
-# use this to make sure README runs with current build
-# rather than installed version
-devtools::load_all()
-library(dplyr, warn.conflicts = FALSE)
-```
-
-```{r fake-load, eval=FALSE}
-library(strayr)
-#> Loading required package: absmapsdata
-library(dplyr)
-```
-
-```{r glimpse}
-glimpse(anzsco)
-glimpse(anzsic)
-glimpse(asced_foe)
-glimpse(asced_qual)
-glimpse(sa42016)
-glimpse(ced2018)
-```
-
-## Converting state names and abbreviations
-
-The `clean_state()` function makes it easy to wrangle vectors of State names and abbreviations - which might be in different forms and possibly
-misspelled.
-
-Let's start with a character vector that includes some misspelled State names,
-some correctly spelled state names, as well as some abbreviations both malformed
-and correctly formed.
-
-```{r create-string}
-
-x <- c("western Straya", "w. A ", "new soth wailes", "SA", "tazz", "Victoria",
-       "northn territy")
-
-```
-
-To convert this character vector to a vector of abbreviations for State names,
- use `clean_state()`:
-
-```{r state}
-clean_state(x)
-
-```
-
-If you want full names for the states rather than abbreviations:
-
-```{r state-fullnames}
-
-clean_state(x, to = "state_name")
-
-```
-
-By default, `clean_state()` uses fuzzy or approximate string matching to match the 
-elements in your character vector to state names/abbreviations. If you only want
-to permit exact matching, you can disable fuzzy matching. This means you will 
-never get false matches, but you will also fail to match misspelled state names 
-or malformed abbreviations; you'll get an `NA` if no match can be found.
-
-```{r state-exact}
- clean_state(x, fuzzy_match = FALSE)
-
-```
-
-If your data is in a data frame, `clean_state()` works well within a `dplyr::mutate()` call:
-
-```{r dplyr}
-
- x_df <- data.frame(state = x, stringsAsFactors = FALSE)
-
-library(dplyr)
- x_df %>% 
-   mutate(state_abbr = clean_state(state))
-```
-
-## Australian public holidays
-This package includes the `auholidays` dataset from the [Australian Public Holidays Dates Machine Readable Dataset](https://data.gov.au/data/dataset/australian-holidays-machine-readable-dataset) as well as a helper function `is_holiday`:
-
-```{r is_holiday_example}
-str(auholidays)
+| Dataset name | Title |
+|---|---|
+| `?anzsco` | Australian and New Zealand Standard Classification of Occupations |
+| `?anzsic` | Australian and New Zealand Standard Industrial Classification |
+| `?asced_foe` | Australian Standard Classification of Education - Field of education levels |
+| `?asced_qual` | Australian Standard Classification of Education - Qualification levels |
 
 
-is_holiday('2020-01-01')
-is_holiday('2019-05-27', jurisdictions = c('ACT', 'TAS'))
+### Other datasets
+- `?auholidays` contains a tidy dataset of Australian public holidays and an associated helper function `is_holiday()`
+- The package also loads [`absmapsdata`](https://github.com/wfmackey/absmapsdata), which contains ASGS (like `absmapsdata::sa12016`) and non-ASGS structures (like `absmapsdata::ced2018`) *and their geometry* as `sf` objects.
 
-h_df <- data.frame(dates = c('2020-01-01', '2020-01-10'))
-
-h_df %>%
-  mutate(IsHoliday = is_holiday(dates))
-```
-
+### Helper functions
+* Functions to help clean data, including `clean_state()` and `clean_anzsco()`. An example of how to clean state names can be found in `vignette("clean_state")`
+* The `get_seifa()` function to download [SEIFA](https://www.abs.gov.au/AUSSTATS/abs@.nsf/Lookup/2033.0.55.001Main+Features12016?OpenDocument) data.
